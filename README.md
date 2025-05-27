@@ -1,8 +1,8 @@
-# 📝 Notas App con IndexedDB
+# Notas App con IndexedDB
 
 Este es un prototipo funcional de una aplicación de notas desarrollado como parte del Taller Práctico.
 
-## 🚀 Tecnologías utilizadas
+##  Tecnologías utilizadas
 
 - **Lenguaje:** HTML, JavaScript
 - **Librerías/frameworks:** Ninguno
@@ -11,7 +11,7 @@ Este es un prototipo funcional de una aplicación de notas desarrollado como par
 
 ---
 
-## 🎯 ¿Qué hace la aplicación?
+## ¿Qué hace la aplicación?
 
 - Permite al usuario escribir una nota o recordatorio.
 - Guarda cada nota localmente en una base de datos del navegador (IndexedDB).
@@ -20,7 +20,7 @@ Este es un prototipo funcional de una aplicación de notas desarrollado como par
 
 ---
 
-## 🛠️ ¿Cómo se guarda la nota localmente?
+##  ¿Cómo se guarda la nota localmente?
 
 - Al hacer clic en "Guardar Nota":
   - Se genera un objeto con `id`, `contenido` y `fecha`.
@@ -29,7 +29,7 @@ Este es un prototipo funcional de una aplicación de notas desarrollado como par
 
 ---
 
-## 🌐 ¿Cómo se simula el envío al servidor?
+## ¿Cómo se simula el envío al servidor?
 
 - Luego de guardar la nota, se llama a una función `enviarAlServidor(nota)`.
 - Esta función imprime el contenido JSON de la nota en la consola del navegador:
