@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Notas con IndexedDB</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      max-width: 600px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      padding: 8px;
+      font-size: 16px;
+      resize: vertical;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      background: #f0f0f0;
+      margin-top: 8px;
+      padding: 10px;
+      border-radius: 5px;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Notas</h1>
+
+  <textarea id="nota" placeholder="Escribe tu nota..."></textarea><br>
+  <button onclick="guardarNota()">Guardar Nota</button>
+
+  <h2>Notas guardadas</h2>
+  <ul id="listaNotas"></ul>
+
+  <script>
+    let db;
+
+    // Abrir o crear la base de datos IndexedDB
+    const request = indexedDB.open("NotasDB", 1);
+
+    request.onerror = () => {
+      console.error("No se pudo abrir la base de datos");
+    };
+
+    request.onsuccess = () => {
+      db = request.result;
+      mostrarNotas();
+    };
+
+    request.onupgradeneeded = (event) => {
+      db = event.target.result;
+      if (!db.objectStoreNames.contains("notas")) {
+        db.createObjectStore("notas", { keyPath: "id" });
+      }
+    };
+
+    function guardarNota() {
+      const texto = document.getElementById("nota").value.trim();
+      if (texto === "") {
+        alert("Por favor escribe una nota.");
+        return;
+      }
+
+      const transaction = db.transaction(["notas"], "readwrite");
+      const store = transaction.objectStore("notas");
+
+      const nota = {
+        id: Date.now(),
+        contenido: texto,
+        fecha: new Date().toLocaleString(),
+      };
+
+      const requestAdd = store.add(nota);
+
+      requestAdd.onsuccess = () => {
+        console.log("Nota guardada localmente:", nota);
+        enviarAlServidor(nota);
+        mostrarNotas();
+        document.getElementById("nota").value = "";
+      };
+
+      requestAdd.onerror = () => {
+        alert("Error al guardar la nota");
+      };
+    }
+
+    function mostrarNotas() {
+      const lista = document.getElementById("listaNotas");
+      lista.innerHTML = "";
+
+      const transaction = db.transaction(["notas"], "readonly");
+      const store = transaction.objectStore("notas");
+      const requestAll = store.getAll();
+
+      requestAll.onsuccess = () => {
+        const notas = requestAll.result;
+        notas.forEach((nota) => {
+          const li = document.createElement("li");
+          li.textContent = `${nota.fecha} - ${nota.contenido}`;
+          lista.appendChild(li);
+        });
+      };
+    }
+
+    function enviarAlServidor(nota) {
+      console.log("📤 Simulando envío al servidor REST:", JSON.stringify(nota));
+    }
+  </script>
+
+</body>
+</html>
